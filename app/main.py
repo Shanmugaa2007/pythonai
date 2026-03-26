@@ -8,9 +8,17 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 def is_url(text):
     return bool(re.search(r'https?://|www\.', text))
@@ -96,12 +104,11 @@ def check(data: dict):
         probs = url_model.predict_proba([features])[0]
         input_type = "URL"
         index=1
-
         for word in words:
-            if words in input_text:
+            if word in input_text:
                 index=0
-            else:
-                index=1
+                print(word)
+                break
     
     else:
         vec = vectorizer.transform([input_text])
